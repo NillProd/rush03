@@ -43,28 +43,31 @@ class myGitLight
 /*  S   P   E   C   I   A   L_______M   E   T   H   O   D */
         }
     }
-    public function protocole_init($cmd){
-      //global $cmd;
-        if(!file_exists($cmd[2]))
+
+
+    public function protocole_init($path = null){
+      $path=$path[2];
+      var_dump($path);
+        if(!file_exists($path))
         {
-          echo "Could not access $cmd[2]\n";
+          echo "Could not access $path\n";
           return 1;
         }
         else {
           {
-              if(is_writable($cmd[2]) && is_readable($cmd[2])){
-                if(file_exists($cmd[2].'/.MyGitLight'))
+              if(is_writable($path) && is_readable($path)){
+                if(file_exists($path.'/.MyGitLight'))
                 {
                   echo ".myGitLight : this folder already has a myGitLight";
                   return 1;
                 }
                 else
                 {
-                  mkdir($cmd[2].'/.MyGitLight', $mode = 0777, $recursive = true);
-                  mkdir($cmd[2].'/.MyGitLight/add', $mode = 0777, $recursive = true);
-                  mkdir($cmd[2].'/.MyGitLight/commit', $mode = 0777, $recursive = true);
-                  mkdir($cmd[2].'/.MyGitLight/log', $mode = 0777, $recursive = true);
-                  copy('MyGitLight.php',$cmd[2].'/.MyGitLight/MyGitLight.php');
+                  mkdir($path.'/.MyGitLight', $mode = 0777, $recursive = true);
+                  mkdir($path.'/.MyGitLight/add', $mode = 0777, $recursive = true);
+                  mkdir($path.'/.MyGitLight/commit', $mode = 0777, $recursive = true);
+                  mkdir($path.'/.MyGitLight/log', $mode = 0777, $recursive = true);
+                  copy('MyGitLight.php',$path[2].'/.MyGitLight/MyGitLight.php');
                   return 0;
                 }
               }
