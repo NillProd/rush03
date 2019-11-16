@@ -35,43 +35,46 @@ class myGitLight
                 $this->protocole_rm_file($cmd);
                 self::protocole_rm_file();
             }
+            elseif($cmd[1] == "init");
+            {
+              $this->protocole_init($cmd);
+              self::protocole_init();
+            }
 /*  S   P   E   C   I   A   L_______M   E   T   H   O   D */
         }
     }
-    public protocole_init(){
-      global $nparametre = $argc;
-      global $tabeau = $argv;
-      if($nparametre > 2)
-      {
-        if(!file_exists($tableau[2]))
+    public function protocole_init($cmd){
+      //global $cmd;
+        if(!file_exists($cmd[2]))
         {
-          echo "Could not access $tableau[2]\n";
+          echo "Could not access $cmd[2]\n";
           return 1;
         }
         else {
           {
-              if(is_writable($tableau[2]) && is_readable($tableau[2])){
-                if(file_exists($tableau[2].'/.MyGitLight'))
+              if(is_writable($cmd[2]) && is_readable($cmd[2])){
+                if(file_exists($cmd[2].'/.MyGitLight'))
                 {
-
+                  echo ".myGitLight : this folder already has a myGitLight";
+                  return 1;
                 }
                 else
                 {
-                  
+                  mkdir($cmd[2].'/.MyGitLight', $mode = 0777, $recursive = true);
+                  mkdir($cmd[2].'/.MyGitLight/add', $mode = 0777, $recursive = true);
+                  mkdir($cmd[2].'/.MyGitLight/commit', $mode = 0777, $recursive = true);
+                  mkdir($cmd[2].'/.MyGitLight/log', $mode = 0777, $recursive = true);
+                  copy('MyGitLight.php',$cmd[2].'/.MyGitLight/MyGitLight.php');
+                  return 0;
                 }
               }
               else
               {
                 echo "Coul not access : Bad Permission\n";
+                return 1;
               }
           }
         }
-      }
-      else
-      {
-        echo "A folder is needed\n";
-        return 1;
-      }
     }
     public function protocole_add_all($cmd = null)
     {
