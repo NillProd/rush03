@@ -4,13 +4,13 @@ class myGitLight
 {
     public function protocole()
     {
-        unset($cmd);
-        $z = 0;
-        if ($z == 0)
+        unset($cmd);    // Sert à unset lors d'un retour d'appel de fonction
+        $z      = 0;
+        if ($z == 0)    // boucle infini pour protocole() - l'utilisateur pourra réitérer ses commandes
         {
-            echo "Bienvenue dans myGitLight v0.1: une version light et efficace\nQue souhaitez vous faire ?  (mgl --help pour voir toutes les commandes)\n";
-            $cmd = readline();
-            $cmd = trim($cmd);
+            echo "Bienvenue dans myGitLight v0.1: une version light et efficace\nQue souhaitez vous faire ?  (mgl --help pour voir toutes les commandes)\n<!> Attention les commandes sont sensibles à la casse <!>\n";
+            $cmd    = readline();
+            $cmd    = trim($cmd);
 
 /*  C   H   E   C   K   E   D   _   M   E   T   H   O   D */
             if ($cmd == "mgl --help"){
@@ -29,8 +29,13 @@ class myGitLight
                 self::protocole_rm_all();
             }
 /*  C   H   E   C   K   E   D  ___  M   E   T   H   O   D */
+// CHECK METHOD -> SONT DES commande saisis par l'utilisateur "EXPLICITES" c'est à dire qu'elle peuvent facilement etre comprise et orienter par le script !
 
-
+/*
+Il y a des arguments donné par l'utilisateur qui ne sont pas compréhensible par le script : il faut donc les traités particulièrement
+Pour se faire on va transformer notre string en tableau
+et vérifier la valeur [1] pour savoir dans quelle fonction nous allons envoyé notre valeur tableau($cmd) soit la commande ecrite par l'utilisateur !!
+*/
 /*  A   R   G   U   M   E   N   T   S   _______    M   E   T   H   O   D */
             $cmd = explode(" ",$cmd);
             if ($cmd[1] == "rm")
@@ -40,8 +45,12 @@ class myGitLight
             }
             elseif ($cmd[1] == "add")
             {
-                $thi->protocole_add_file($cmd);
+                $this->protocole_add_file($cmd);
                 self::protocole_add_file();
+            }
+            else
+            {
+                echo "Syntaxe inconnu";
             }
         }
     }
@@ -51,23 +60,54 @@ class myGitLight
     public function protocole_init($cmd = null)
     {
     }
-    public function protocole_add_all($cmd = null)
+    public function protocole_add_all()
     {
     }
     public function protocole_add_file($cmd = null)
     {
 
     } 
-    public function protocole_rm_all($cmd = null)
+    public function protocole_rm_all()
     {
-        $cmd = scandir('./');
+        $cmd    = scandir('./');
         array_shift($cmd);
         array_shift($cmd);
-        $key = array_search(".myGitlight", $cmd); // dossier caché myLightGit
-        $key2 = array_search("myGitLight.php", $cmd); // fichier principale .myGitLight
+        $key    = array_search(".myGitlight", $cmd); // dossier caché myLightGit
+        $key2   = array_search("myGitLight.php", $cmd); // fichier principale .myGitLight
         unset($cmd[$key]);
         unset($cmd[$key2]);
-        $cmd = array_values($cmd);
+        $cmd    = array_values($cmd); // reindex les clefs de manière croissante
+        echo "êtes vous certains de vouloir supprimer les fichiers suivant :\n";
+        foreach ($cmd as $key => $value)
+        {
+            echo $value . "\n";
+        }
+        echo "Entrez y pour valider : n pour revenir en arrière\n";
+        $cmd2   = "";
+        $cmd2   = readline($cmd2);
+        $cmd2   = trim($cmd2);
+        $a      = 2;
+        if ($cmd2 == "y" || $cmd2 == "yes")
+            { 
+            foreach ($cmd as $key => $value)
+            {
+                shell_exec('rm -rf ' . $cmd[$key]);
+            }
+            foreach ($cmd as $key => $value)
+            {
+                $value = $value . "";
+                shell_exec('rm -rf ' . $cmd[$key]);
+            }
+            echo "Tous les fichiers ont été supprimés avec succès !";
+        }
+        else if ($cmd2 == "n" || $cmd2 == "no" || $cmd2 == "non")
+        {
+            self::protocole();
+        }
+        else
+        {
+            echo "Je ne comprends pas";
+        }
         print_r($cmd);
         exit("\nEND___");
     }
@@ -76,17 +116,17 @@ class myGitLight
         echo "êtes vous certains de vouloir supprimer les fichiers suivant :\n";
         unset($cmd[0]);
         unset($cmd[1]);
-        $i = 0;
+        $i     = 0;
         foreach ($cmd as $key => $value)
         {
             $i++;
             echo "$value\n";
         }
         echo "Entrez y pour valider : n pour revenir en arrière\n";
-        $cmd2 = "";
-        $cmd2 = readline($cmd2);
-        $cmd2 = trim($cmd2);
-        $a = 2;
+        $cmd2   = "";
+        $cmd2   = readline($cmd2);
+        $cmd2   = trim($cmd2);
+        $a      = 2;
         if ($cmd2 == "y" || $cmd2 == "yes")
         {
             while($cmd[$a] <= $cmd[$i])
@@ -123,8 +163,8 @@ class myGitLight
     }
 }
 
-$foo = new myGitLight();
-$foo->protocole();
+$foo = new myGitLight(); // en POO il est obligatoire de déclarer sa classe 
+$foo->protocole();       // on peux ensuite EXECUTE une méthode (fonction) pour lancer le script dedans
 /**
  * INTERDIT : 
  * - 
