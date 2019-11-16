@@ -31,78 +31,45 @@ class myGitLight
 /*  C   H   E   C   K   E   D  ___  M   E   T   H   O   D */
 
 
-/*  S   P   E   C   I   A   L_______M   E   T   H   O   D */
+/*  A   R   G   U   M   E   N   T   S   _______    M   E   T   H   O   D */
             $cmd = explode(" ",$cmd);
-            if($cmd[1] == "rm")
+            if ($cmd[1] == "rm")
             {
                 $this->protocole_rm_file($cmd);
                 self::protocole_rm_file();
             }
-<<<<<<< HEAD
-            elseif($cmd[1] == "init");
+            elseif ($cmd[1] == "add")
             {
-              $this->protocole_init($cmd);
-              self::protocole_init();
+                $thi->protocole_add_file($cmd);
+                self::protocole_add_file();
             }
-/*  S   P   E   C   I   A   L_______M   E   T   H   O   D */
         }
     }
-
-
-    public function protocole_init($path = null){
-      $path=$path[2];
-      var_dump($path);
-        if(!file_exists($path))
-        {
-          echo "Could not access $path\n";
-          return 1;
-        }
-        else {
-          {
-              if(is_writable($path) && is_readable($path)){
-                if(file_exists($path.'/.MyGitLight'))
-                {
-                  echo ".myGitLight : this folder already has a myGitLight";
-                  return 1;
-                }
-                else
-                {
-                  mkdir($path.'/.MyGitLight', $mode = 0777, $recursive = true);
-                  mkdir($path.'/.MyGitLight/add', $mode = 0777, $recursive = true);
-                  mkdir($path.'/.MyGitLight/commit', $mode = 0777, $recursive = true);
-                  mkdir($path.'/.MyGitLight/log', $mode = 0777, $recursive = true);
-                  copy('MyGitLight.php',$path[2].'/.MyGitLight/MyGitLight.php');
-                  return 0;
-                }
-              }
-              else
-              {
-                echo "Coul not access : Bad Permission\n";
-                return 1;
-              }
-          }
-        }
-=======
-        }
-    }
-/*  S   P   E   C   I   A   L_______M   E   T   H   O   D */
+/*  A   R   G   U   M   E   N   T   S   _______    M   E   T   H   O   D */
 
 
     public function protocole_init($cmd = null)
     {
->>>>>>> 1e006a2cb59e2320a53fb40bd8681d6ff579dab6
     }
     public function protocole_add_all($cmd = null)
     {
-        
     }
     public function protocole_add_file($cmd = null)
     {
 
-    }
+    } 
     public function protocole_rm_all($cmd = null)
     {
-        scandir('./');
+        $cmd = scandir('./');
+        array_shift($cmd);
+        array_shift($cmd);
+        $key = array_search(".myGitlight", $cmd); // dossier caché myLightGit
+        $key2 = array_search("myGitLight.php", $cmd); // fichier principale .myGitLight
+        unset($cmd[$key]);
+        unset($cmd[$key2]);
+        $cmd = array_values($cmd);
+        print_r($cmd);
+        exit("\nEND___");
     }
     public function protocole_rm_file($cmd = null)
     {
@@ -135,7 +102,7 @@ class myGitLight
         }
         else
         {
-
+            echo "Je ne comprends pas";
         }
     }
     public function protocole_commit($cmd = null)
