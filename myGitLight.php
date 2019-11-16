@@ -12,9 +12,12 @@ class myGitLight
             $cmd = readline();
             $cmd = trim($cmd);
 
-/*  G   L   O   B   A   L   S   _   M   E   T   H   O   D */
+/*  C   H   E   C   K   E   D   _   M   E   T   H   O   D */
             if ($cmd == "mgl --help"){
                 self::protocole_man();
+            }
+            elseif ($cmd == "mgl init" || $cmd == "mgl  init"){
+                self::protocole_init();
             }
             elseif ($cmd == "mgl add *" || $cmd == "mgl add -A" || $cmd == "mgl add --all") {
                 self::protocole_add_all();
@@ -25,7 +28,7 @@ class myGitLight
             elseif ($cmd == "mgl rm *" || $cmd == "mgl rm -A" || $cmd == "mgl rm --all"){
                 self::protocole_rm_all();
             }
-/*  G   L   O   B   A   L   S  ___  M   E   T   H   O   D */
+/*  C   H   E   C   K   E   D  ___  M   E   T   H   O   D */
 
 
 /*  S   P   E   C   I   A   L_______M   E   T   H   O   D */
@@ -35,47 +38,17 @@ class myGitLight
                 $this->protocole_rm_file($cmd);
                 self::protocole_rm_file();
             }
-/*  S   P   E   C   I   A   L_______M   E   T   H   O   D */
         }
     }
-    public protocole_init(){
-      global $nparametre = $argc;
-      global $tabeau = $argv;
-      if($nparametre > 2)
-      {
-        if(!file_exists($tableau[2]))
-        {
-          echo "Could not access $tableau[2]\n";
-          return 1;
-        }
-        else {
-          {
-              if(is_writable($tableau[2]) && is_readable($tableau[2])){
-                if(file_exists($tableau[2].'/.MyGitLight'))
-                {
+/*  S   P   E   C   I   A   L_______M   E   T   H   O   D */
 
-                }
-                else
-                {
-                  
-                }
-              }
-              else
-              {
-                echo "Coul not access : Bad Permission\n";
-              }
-          }
-        }
-      }
-      else
-      {
-        echo "A folder is needed\n";
-        return 1;
-      }
+
+    public function protocole_init($cmd = null)
+    {
     }
     public function protocole_add_all($cmd = null)
     {
-
+        
     }
     public function protocole_add_file($cmd = null)
     {
@@ -83,7 +56,7 @@ class myGitLight
     }
     public function protocole_rm_all($cmd = null)
     {
-
+        scandir('./');
     }
     public function protocole_rm_file($cmd = null)
     {
@@ -96,7 +69,6 @@ class myGitLight
             $i++;
             echo "$value\n";
         }
-        $i += 2;
         echo "Entrez y pour valider : n pour revenir en arrière\n";
         $cmd2 = "";
         $cmd2 = readline($cmd2);
@@ -109,6 +81,7 @@ class myGitLight
                 unlink("./$cmd[$a]");
                 $a++;
             }
+            unlink("./$cmd[$a]");
         }
         else if ($cmd2 == "n" || $cmd2 == "no" || $cmd2 == "non")
         {
@@ -135,12 +108,11 @@ class myGitLight
         echo "Souhaitez-vous continuer ? (y/n)\n\n";
         exit();
     }
-
 }
 
 $foo = new myGitLight();
 $foo->protocole();
 /**
- * INTERDIT :
- * -
+ * INTERDIT : 
+ * - 
  */
