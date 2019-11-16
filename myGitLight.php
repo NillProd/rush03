@@ -38,10 +38,44 @@ class myGitLight
 /*  S   P   E   C   I   A   L_______M   E   T   H   O   D */
         }
     }
+    public protocole_init(){
+      global $nparametre = $argc;
+      global $tabeau = $argv;
+      if($nparametre > 2)
+      {
+        if(!file_exists($tableau[2]))
+        {
+          echo "Could not access $tableau[2]\n";
+          return 1;
+        }
+        else {
+          {
+              if(is_writable($tableau[2]) && is_readable($tableau[2])){
+                if(file_exists($tableau[2].'/.MyGitLight'))
+                {
 
+                }
+                else
+                {
+                  
+                }
+              }
+              else
+              {
+                echo "Coul not access : Bad Permission\n";
+              }
+          }
+        }
+      }
+      else
+      {
+        echo "A folder is needed\n";
+        return 1;
+      }
+    }
     public function protocole_add_all($cmd = null)
     {
-        
+
     }
     public function protocole_add_file($cmd = null)
     {
@@ -101,11 +135,12 @@ class myGitLight
         echo "Souhaitez-vous continuer ? (y/n)\n\n";
         exit();
     }
+
 }
 
 $foo = new myGitLight();
 $foo->protocole();
 /**
- * INTERDIT : 
- * - 
+ * INTERDIT :
+ * -
  */
