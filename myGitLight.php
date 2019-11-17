@@ -1,5 +1,4 @@
 <?php
-
 class myGitLight
 {
     public function protocole()
@@ -16,7 +15,6 @@ class myGitLight
             unset($cmd);
             $cmd    = readline();
             $cmd    = trim($cmd);
-
 /*  C   H   E   C   K   E   D   _   M   E   T   H   O   D */
             if(isset($cmd) && is_string($cmd))
             {
@@ -35,48 +33,45 @@ class myGitLight
                 elseif ($cmd == "mgl rm *" || $cmd == "mgl rm -A" || $cmd == "mgl rm --all"){
                     self::protocole_rm_all();
                 }
+                elseif($cmd == "clear")
+                {
+                  @system('clear');
+                }
     /*  C   H   E   C   K   E   D  ___  M   E   T   H   O   D */
                 elseif ($cmd == "exit" || $cmd == "close" || $cmd == "leave" || $cmd == "stop")
                 {
-                    exit("\nMerci d'avoir utilisé notre programme ! à bientôt\n");
+                    exit("\nMerci d'avoir utilisé notre programme ! à bientôt !\n");
                 }
                 elseif ($cmd == "je suis un noob")
                 {
-                    echo "\nPas de chance : il faut travailler pour progresser\n";
+                    echo "\nPas de chance : il faut travailler pour progresser !\n";
                 }
     /*  A   R   G   U   M   E   N   T   S   _______    M   E   T   H   O   D */
                 $cmd = explode(" ",$cmd);       // conversion tableau pour arguments
-                if ($cmd[1] == "rm")
+                if (array_search('rm',$cmd) == "rm")
                 {
                     $this->protocole_rm_file($cmd);
                     self::protocole_rm_file();
                 }
-                elseif ($cmd[1] == "add")
+                elseif (array_search('add',$cmd) == "add")
                 {
                     $this->protocole_add_file($cmd);
                     self::protocole_add_file();
                 }
-                elseif ($cmd[1] == "commit")
+                elseif (array_search('commit',$cmd) == "commit")
                 {
                     $this->protocole_commit($cmd);
                     self::protocole_commit();
-                }
-                else
-                {
-                    echo "La commande n'est pas reconnu. ( man de myGitLIght ==> mgl --help )";
-                    self::protocole();   
                 }
             }
             else
             {
                 echo "La saisi est invalide. ( man de myGitLIght ==> mgl --help )";
                 self::protocole();
-            }             
+            }
         }
     }
 /*  A   R   G   U   M   E   N   T   S   _______    M   E   T   H   O   D */
-
-
     public function protocole_init($path = null)
     {
         $path = realpath("./");
@@ -90,8 +85,9 @@ class myGitLight
             else
             {
                 mkdir($path.'/.MyGitLight', $mode = 0777, $recursive = true);
-                mkdir($path.'/.MyGitLight/add/', $mode = 0777, $recursive = true); 
-                mkdir($path.'/.MyGitLight/commit/', $mode = 0777, $recursive = true); 
+                mkdir($path.'/.MyGitLight/add/', $mode = 0777, $recursive = true);
+                mkdir($path.'/.MyGitLight/commit/', $mode = 0777, $recursive = true);
+                mkdir($path.'/.MyGitLight/log/', $mode = 0777, $recursive = true);
                 copy('myGitLight.php',$path.'/.MyGitLight/myGitLight.php');
                 echo "Congratulation ! Your Repository has been save in $path\n\n";
                 self::protocole();
@@ -103,9 +99,9 @@ class myGitLight
             self::protocole();
         }
     }
-    public function protocole_add_all()
+    public function protocole_add_all($path = null)
     {
-        $path = realpath("./");
+        $path = realpath($path[1]);
         $dir = scandir($path);
         unset($dir[array_search('.', $dir, true)]);
         unset($dir[array_search('..', $dir, true)]);
@@ -118,16 +114,17 @@ class myGitLight
             {
                 $exec = "cp $value $path/.MyGitLight/add/";
                 shell_exec($exec);
+                echo "Congratulation ! Your file : $value is added to .MyGitLight/add/\n";
             }
             elseif (is_dir("$path/$value"))
             {
                 $exec = "cp -r $value/ $path/.MyGitLight/add/";
                 shell_exec($exec);
+                echo "Congratulation ! Your file : $value is added to .MyGitLight/add/\n";
             }
             else
             {
                 echo "\nune erreur a été detectée. : copie corrompue\n";
-                exit();
             }
         }
         self::protocole();
@@ -153,12 +150,12 @@ class myGitLight
                 if (is_file("$path/$value"))
                 {
                     $exec = "cp $value $path/.MyGitLight/add/";
-                    shell_exec($exec);                    
+                    shell_exec($exec);
                 }
                 elseif (is_dir("$path/$value"))
                 {
                     $exec = "cp -r $value/ $path/.MyGitLight/add/";
-                    shell_exec($exec);                    
+                    shell_exec($exec);
                 }
             }
         }
@@ -178,7 +175,7 @@ class myGitLight
         $cmd    = scandir('./');
         array_shift($cmd);
         array_shift($cmd);
-        $key    = array_search(".myGitlight", $cmd);
+        $key    = array_search(".MyGitlight", $cmd);
         $key2   = array_search("myGitLight.php", $cmd);
         unset($cmd[$key]);
         unset($cmd[$key2]);
@@ -194,17 +191,17 @@ class myGitLight
         $cmd2   = trim($cmd2);
         $a      = 2;
         if ($cmd2 == "y" || $cmd2 == "yes")
-        { 
+        {
             foreach ($cmd as $key => $value)
             {
                 if (is_file("$path/$value"))
                 {
-                    shell_exec('rm -rf ' . $cmd[$key]);
+                    shell_exec('rm -rf ' . "./.MyGitLight".$cmd[$key]);
                 }
                 elseif (is_dir("$path/$value"))
                 {
                     $value = $value . "/";
-                    shell_exec('rm -rf ' . $cmd[$key]);                    
+                    shell_exec('rm -rf ' . "./.MyGitLight".$cmd[$key]);
                 }
             }
             echo "Tous les fichiers ont été supprimés avec succès !";
@@ -244,11 +241,13 @@ class myGitLight
                 if (is_file("$path/$value"))
                 {
                     shell_exec('rm -rf ' . $cmd[$key]);
+                    echo "Your file : $cmd[$key] has been deleted !\n";
                 }
                 elseif (is_dir("$path/$value"))
                 {
                     $value = $value . "/";
-                    shell_exec('rm -rf ' . $cmd[$key]);                    
+                    shell_exec('rm -rf ' . $cmd[$key]);
+                    echo "Your file : $cmd[$key] has been deleted !\n";
                 }
             }
         }
@@ -262,12 +261,25 @@ class myGitLight
         }
         self::protocole();
     }
-    public function protocole_commit($cmd = null)
+    public function protocole_commit_all($parametre = null,$path = null, $tableau = null)
     {
-        unset($cmd[0]);
-        unset($cmd[1]);
-        implode()
-        uniqid();
+      $path =  realpath($path);
+      var_dump($tableau = scandir($path));
+      unset($tableau[array_search('myGitLight.php',$tableau,true)]);
+      
+      if(true)
+      {
+        echo "je suis ici !\n";
+        $compress = new PharData("./.MyGitLight/commit".basename($tableau[2]).".tar");
+        $compress->buildFromDirectory(".MyGitLight/add");
+        $file = fopen("./.MyGitLight/log","w");
+        fwrite($file, md5($tableau." ".$tableau."\n"));
+        self::protocole();
+      }
+      else
+      {
+        echo "je suis la dans le else !\n";
+      }
     }
     public function protocole_man()
     {
@@ -276,16 +288,16 @@ class myGitLight
         echo "mgl add       (-A) | (--all) | (*)    : Copie le répertoire courant ainsi que tous les dossiers, sous dossiers.\n\n";
         echo "mgl commit    \"yourCommitName\"      : Créer une archive tar de vos fichiers, dossiers et sous répertoires.\n\n";
         echo "mgl rm        (-A) | (--all) | (*)    : Supprime tous les fichiers du répertoire excepté .myGitLight\n\n";
-        echo "mgl rm        \"nameFile\" \"nameFile2\"  : Supprime le/les fichier(s) spécifié(s)";
+        echo "mgl rm        \"nameFile\" \"nameFile2\"  : Supprime le/les fichier(s) spécifié(s)\n\n";
+        echo "clear__________________________________:nettoie toute les instruction afficher a l'écran\n\n";
         echo "\n__________________________\n";
-        echo "Souhaitez-vous continuer ?            (y/n)\n\n";
-        exit();
+        //echo "Souhaitez-vous continuer ?            (y/n)\n\n";
+        self::protocole();
     }
 }
-
-$foo = new myGitLight(); // en POO il est obligatoire de déclarer sa classe 
+$foo = new myGitLight(); // en POO il est obligatoire de déclarer sa classe
 $foo->protocole();       // on peux ensuite EXECUTE une méthode (fonction) pour lancer le script dedans
 /**
- * INTERDIT : 
- * - 
+ * INTERDIT :
+ * -
  */
