@@ -35,6 +35,10 @@ class myGitLight
                 elseif ($cmd == "mgl rm *" || $cmd == "mgl rm -A" || $cmd == "mgl rm --all"){
                     self::protocole_rm_all();
                 }
+                elseif ($cmd == "mgl log")
+                {
+                    self::protocole_log();
+                }
     /*  C   H   E   C   K   E   D  ___  M   E   T   H   O   D */
                 elseif ($cmd == "exit" || $cmd == "close" || $cmd == "leave" || $cmd == "stop")
                 {
@@ -45,21 +49,26 @@ class myGitLight
                 elseif (strpos($cmd, " "))
                 {
                     $cmd = explode(" ",$cmd);
-                    if ($cmd[1] == "rm")
+                    if ($cmd[0] == "mgl" && $cmd[1] == "rm")
                     {
                         $this->protocole_rm_file($cmd);
                         self::protocole_rm_file();
                     }
-                    elseif ($cmd[1] == "add")
+                    elseif ($cmd[0] == "mgl" && $cmd[1] == "add")
                     {
                         $this->protocole_add_file($cmd);
                         self::protocole_add_file();
                     }
-                    elseif ($cmd[1] == "commit")
+                    elseif ($cmd[0] == "mgl" && $cmd[1] == "commit")
                     {
                         $this->protocole_commit($cmd);
                         self::protocole_commit();
-                    }                
+                    }
+                    else
+                    {
+                        echo "La commande n'est pas reconnu. ( man de myGitLIght ==> mgl --help )\n";
+                        self::protocole();   
+                    }             
                 }
                 else
                 {
@@ -92,7 +101,7 @@ class myGitLight
                 mkdir($path.'/.MyGitLight', $mode = 0777, $recursive = true);
                 mkdir($path.'/.MyGitLight/add/', $mode = 0777, $recursive = true); 
                 mkdir($path.'/.MyGitLight/commit/', $mode = 0777, $recursive = true);
-                fopen(".MyGitLight/log",w);
+                fopen(".MyGitLight/log",'a+');
                 copy('myGitLight.php',$path.'/.MyGitLight/myGitLight.php');
                 echo "Congratulation ! Your Repository has been save in $path\n\n";
                 self::protocole();
@@ -121,17 +130,19 @@ class myGitLight
                 {
                     $exec = "cp $value $path/.MyGitLight/add/";
                     shell_exec($exec);
+                    echo "Your file has been added : $value\n";
                 }
                 elseif (is_dir("$path/$value"))
                 {
                     $exec = "cp -r $value/ $path/.MyGitLight/add/";
                     shell_exec($exec);
+                    echo "Your directory has been added : $value\n";
                 }
                 else
                 {
                     exit("\nune erreur a été detectée. : copie corrompue\n");
                 }
-            }            
+            }
         }
         else
         {
@@ -321,9 +332,23 @@ class myGitLight
                 exit("erreur de compilation");
             }
         }
+        $total = trim($total);
         shell_exec("tar -cf .MyGitLight/commit/$id $total");
+        if (file_exists("./.MyGitLight/log"))
+        {
+            $fp = fopen("./.MyGitLight/log", 'a+');
+            echo "Entrez le message de commit\n";
+            $msg = readline();
+            fwrite($fp, "$id $msg\n");
+            fclose($fp);
+            echo "your commit has been commited to $path/.MyGitLight/$id\n";
+        }
         self::protocole();
     }
+/*     public function protocole_log($cmd = null)
+    {
+        echo ;
+    } */
 
     public function protocole_man()
     {
