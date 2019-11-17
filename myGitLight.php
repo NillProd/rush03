@@ -56,10 +56,20 @@ class myGitLight
                     $this->protocole_add_file($cmd);
                     self::protocole_add_file();
                 }
+                elseif ($cmd[1] == "commit")
+                {
+                    $this->protocole_commit($cmd);
+                    self::protocole_commit();
+                }
+                else
+                {
+                    echo "La commande n'est pas reconnu. ( man de myGitLIght ==> mgl --help )";
+                    self::protocole();   
+                }
             }
             else
             {
-                echo "La commande entrée est invalide. ( man de myGitLIght ==> mgl --help )";
+                echo "La saisi est invalide. ( man de myGitLIght ==> mgl --help )";
                 self::protocole();
             }             
         }
@@ -69,7 +79,7 @@ class myGitLight
 
     public function protocole_init($path = null)
     {
-        $path = realpath($path);
+        $path = realpath("./");
         if(is_writable($path) && is_readable($path))
         {
             if(file_exists($path.'/.MyGitLight'))
@@ -81,6 +91,7 @@ class myGitLight
             {
                 mkdir($path.'/.MyGitLight', $mode = 0777, $recursive = true);
                 mkdir($path.'/.MyGitLight/add/', $mode = 0777, $recursive = true); 
+                mkdir($path.'/.MyGitLight/commit/', $mode = 0777, $recursive = true); 
                 copy('myGitLight.php',$path.'/.MyGitLight/myGitLight.php');
                 echo "Congratulation ! Your Repository has been save in $path\n\n";
                 self::protocole();
@@ -115,7 +126,7 @@ class myGitLight
             }
             else
             {
-                echo "\nune erreur a été detecté.\n";
+                echo "\nune erreur a été detectée. : copie corrompue\n";
                 exit();
             }
         }
@@ -163,7 +174,7 @@ class myGitLight
     }
     public function protocole_rm_all()
     {
-        $path = realpath($path);
+        $path = realpath("./");
         $cmd    = scandir('./');
         array_shift($cmd);
         array_shift($cmd);
@@ -211,6 +222,8 @@ class myGitLight
     }
     public function protocole_rm_file($cmd = null)
     {
+        $path = "";
+        $path = realpath($path);
         echo "êtes vous certains de vouloir supprimer les fichiers suivant :\n";
         unset($cmd[0]);
         unset($cmd[1]);
@@ -224,15 +237,20 @@ class myGitLight
         $cmd2   = "";
         $cmd2   = readline($cmd2);
         $cmd2   = trim($cmd2);
-        $a      = 2;
         if ($cmd2 == "y" || $cmd2 == "yes")
         {
-            while($cmd[$a] <= $cmd[$i])
+            foreach ($cmd as $key => $value)
             {
-                unlink("./$cmd[$a]");
-                $a++;
+                if (is_file("$path/$value"))
+                {
+                    shell_exec('rm -rf ' . $cmd[$key]);
+                }
+                elseif (is_dir("$path/$value"))
+                {
+                    $value = $value . "/";
+                    shell_exec('rm -rf ' . $cmd[$key]);                    
+                }
             }
-            unlink("./$cmd[$a]");
         }
         else if ($cmd2 == "n" || $cmd2 == "no" || $cmd2 == "non")
         {
@@ -246,16 +264,19 @@ class myGitLight
     }
     public function protocole_commit($cmd = null)
     {
-        
+        unset($cmd[0]);
+        unset($cmd[1]);
+        implode()
+        uniqid();
     }
     public function protocole_man()
     {
         echo "\n\n__________________________\n\n";
         echo "man de myGitLight :\n\n";
         echo "mgl add       (-A) | (--all) | (*)    : Copie le répertoire courant ainsi que tous les dossiers, sous dossiers.\n\n";
-        echo "mgl commit    (\"yourCommitName\")      : Créer une archive tar de vos fichiers, dossiers et sous répertoires.\n\n";
+        echo "mgl commit    \"yourCommitName\"      : Créer une archive tar de vos fichiers, dossiers et sous répertoires.\n\n";
         echo "mgl rm        (-A) | (--all) | (*)    : Supprime tous les fichiers du répertoire excepté .myGitLight\n\n";
-        echo "mgl rm        (nameFile) (nameFile2)  : Supprime le/les fichier(s) spécifié(s)";
+        echo "mgl rm        \"nameFile\" \"nameFile2\"  : Supprime le/les fichier(s) spécifié(s)";
         echo "\n__________________________\n";
         echo "Souhaitez-vous continuer ?            (y/n)\n\n";
         exit();
