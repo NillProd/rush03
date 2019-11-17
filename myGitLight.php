@@ -31,8 +31,14 @@ class myGitLight
                     self::protocole_rm_all();
                 }
     /*  C   H   E   C   K   E   D  ___  M   E   T   H   O   D */
-
-
+                elseif ($cmd == "exit" || $cmd == "close" || $cmd == "leave" || $cmd == "stop")
+                {
+                    exit("\nMerci d'avoir utilisé notre programme ! à bientôt");
+                }
+                elseif ($cmd == "je suis un noob")
+                {
+                    echo "Pas de chance : il faut travailler pour progresser";
+                }
     /*  A   R   G   U   M   E   N   T   S   _______    M   E   T   H   O   D */
                 $cmd = explode(" ",$cmd);       // conversion tableau pour arguments
                 if ($cmd[1] == "rm")
@@ -50,6 +56,7 @@ class myGitLight
                     echo "le champ est vide";
                     self::protocole();
                 }
+                elseif
             }
             else
             {
